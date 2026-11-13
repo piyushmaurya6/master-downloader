@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Frontend build output
+dist/
+dist-ssr/
+*.local
+
+# Rust / Tauri build artifacts
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# Temporary runtime & test artifacts
+*.part
+*.ytdl
+*.corrupt.*.db
+*.db-wal
+*.db-shm
+cookies_*.txt
+.env
+.env.*
+!.env.example
+
+# OS / Editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log

@@ -1,0 +1,19 @@
+name: Feature Request
+description: Suggest an enhancement, workflow improvement, or UI feature for InstaFlow
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or Workflow Need
+      description: What workflow or problem would this feature solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe how you envision this working in InstaFlow.
+    validations:
+      required: true

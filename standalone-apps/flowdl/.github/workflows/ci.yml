@@ -1,0 +1,78 @@
+name: FlowDL Continuous Integration
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend-and-backend-ci:
+    name: Verify & Build Windows x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Rust stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Rust Cargo cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install frontend dependencies (lockfile verified)
+        run: npm ci
+
+      - name: Frontend TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Frontend lint check
+        run: npm run lint
+
+      - name: Frontend unit & UI tests (Vitest)
+        run: npm run test
+
+      - name: Frontend production bundle build
+        run: npm run build
+
+      - name: Prepare & SHA-256 verify bundled engines (yt-dlp, FFmpeg, ffprobe, Deno)
+        shell: pwsh
+        run: ./scripts/prepare-bundled-binaries.ps1
+
+      - name: Backend Rust formatting check
+        working-directory: src-tauri
+        run: cargo fmt --all -- --check
+
+      - name: Backend Rust Clippy lint check
+        working-directory: src-tauri
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Backend Rust unit, integration & migration tests
+        working-directory: src-tauri
+        run: cargo test
+
+      - name: Build production Windows NSIS installer
+        run: npx tauri build --bundles nsis
+
+      - name: Upload Windows NSIS Installer CI Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlowDL-Windows-x64-CI-Installer
+          path: |
+            src-tauri/target/release/flowdl.exe
+            src-tauri/target/release/bundle/nsis/*-setup.exe

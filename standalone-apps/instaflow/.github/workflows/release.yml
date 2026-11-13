@@ -1,0 +1,58 @@
+name: Release — Signed Windows NSIS Installer & Auto-Updater Manifest
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Rust Stable Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cargo Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install Frontend Dependencies
+        run: pnpm install
+
+      - name: Run Verification Suite Before Packaging
+        run: |
+          pnpm typecheck
+          pnpm test
+          cd src-tauri && cargo test
+
+      - name: Build & Publish Windows NSIS Installer via Tauri Action
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: v__VERSION__
+          releaseName: "InstaFlow v__VERSION__"
+          releaseBody: "Automated Windows x64 NSIS installer release (`InstaFlow___VERSION___x64-setup.exe`) with SHA-256 verification and `latest.json` auto-updater manifest."
+          releaseDraft: false
+          prerelease: false
+          args: "--bundles nsis"

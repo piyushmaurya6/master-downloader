@@ -1,0 +1,76 @@
+name: Build & Release Master Downloader (Windows x64)
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: master-downloader/package-lock.json
+
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: master-downloader/src-tauri
+
+      - name: Provision sidecar binaries (yt-dlp, gallery-dl, Deno, FFmpeg)
+        shell: pwsh
+        run: .\scripts\setup-sidecars.ps1
+
+      - name: Install frontend dependencies & run verification tests
+        working-directory: master-downloader
+        run: |
+          npm install
+          npm run typecheck
+          npm run test
+
+      - name: Run Rust unit tests
+        working-directory: master-downloader/src-tauri
+        run: cargo test --lib -- --skip test_live_multi_platform_inspect_and_download
+
+      - name: Build commercial NSIS Installer
+        working-directory: master-downloader
+        run: npx tauri build --bundles nsis
+
+      - name: Stage release artifacts & SHA256 checksums
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path dist-release | Out-Null
+          Copy-Item "master-downloader\src-tauri\target\release\bundle\nsis\*_x64-setup.exe" "dist-release\Master_Downloader_x64-setup.exe" -Force
+          Copy-Item "master-downloader\src-tauri\target\release\master-downloader.exe" "dist-release\MasterDownloader.exe" -Force
+          Get-ChildItem dist-release -File | ForEach-Object {
+            $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+            "$h  $($_.Name)" | Add-Content -Path "dist-release\SHA256SUMS.txt"
+          }
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Master-Downloader-Windows-x64
+          path: dist-release/*
+
+      - name: Publish GitHub Release on Tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist-release/*
+          generate_release_notes: true

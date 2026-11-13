@@ -1,0 +1,113 @@
+{
+  "project": "FlowDL",
+  "version": "1.0.0",
+  "targetPlatform": "Windows 10 / 11 (x64)",
+  "generatedAt": "2026-11-02T16:48:30+05:30",
+  "overallStatus": "READY_FOR_PUBLIC_GITHUB_RELEASE",
+  "artifacts": {
+    "installer": {
+      "filename": "FlowDL_1.0.0_x64-setup.exe",
+      "sizeBytes": 113057287,
+      "sha256": "287946c2f1ae34fc591dd2dfed432e25f15ff8db260518d7298f165858cb38e1"
+    },
+    "executable": {
+      "filename": "FlowDL.exe",
+      "sizeBytes": 6362624,
+      "sha256": "9dfe2b8a42a986b88a3a0bc26cb1f88ff940957f0416dd6b21a5b77954f8505f"
+    },
+    "updaterManifest": "latest.json",
+    "sbom": "FlowDL_1.0.0_sbom.spdx.json"
+  },
+  "checks": [
+    {
+      "category": "Engineering",
+      "item": "5-Layer Clean Architecture & DownloadEngine Trait",
+      "status": "PASS",
+      "evidence": "Implemented Presentation (src/), Application Service (queue/, services/), Download Engine (downloader/engine.rs YtDlpEngine), Persistence (storage/ + migrations/), and Platform Integration (platform/mod.rs)."
+    },
+    {
+      "category": "Engineering",
+      "item": "Typed IPC Contracts & Event Schemas",
+      "status": "PASS",
+      "evidence": "Defined DownloadEventPayload, AppUpdateInfo, EngineUpdateInfo, and DiagnosticReport in src-tauri/src/models/mod.rs and src/types/index.ts; tsc --noEmit exited 0."
+    },
+    {
+      "category": "Engineering",
+      "item": "Automated Unit, Integration & Migration Test Suites",
+      "status": "PASS",
+      "evidence": "Frontend Vitest suite: 12/12 passed; Backend Rust cargo test suite: 19/19 passed."
+    },
+    {
+      "category": "Functionality",
+      "item": "Self-Contained Bundled Engines (yt-dlp, FFmpeg, ffprobe, Deno)",
+      "status": "PASS",
+      "evidence": "Bundled yt-dlp 2026.10.26, FFmpeg/ffprobe N-128280-ga88838af48-20261101 + 7 shared DLLs, and Deno 2.9.8 inside FlowDL_1.0.0_x64-setup.exe."
+    },
+    {
+      "category": "Functionality",
+      "item": "Real FFmpeg 1080p MP4 Video Merge & 320kbps MP3 Audio Conversion",
+      "status": "PASS",
+      "evidence": "Verified in cargo test (test_real_system_dependency_detection_and_ffmpeg_processing) on Unicode & spaces directory paths with CREATE_NO_WINDOW."
+    },
+    {
+      "category": "Functionality",
+      "item": "SQLite Schema Versioning & Transactional Migrations (1.0.0 -> 1.1.0+)",
+      "status": "PASS",
+      "evidence": "Implemented V1__initial_schema.sql and V2__indices_and_metadata.sql with schema_migrations table; verified in test_schema_migrations_preserve_legacy_history_and_queue_across_versions."
+    },
+    {
+      "category": "Functionality",
+      "item": "Dual Update Systems (System A App Updater & System B EngineManager)",
+      "status": "PASS",
+      "evidence": "Implemented services/app_updater.rs + AppUpdateBanner.tsx (System A) and dependencies/engine_manager.rs (System B) with SHA-256 verification and .bak rollback."
+    },
+    {
+      "category": "Security",
+      "item": "No Shell Interpolation, Argument Termination (--), & CREATE_NO_WINDOW",
+      "status": "PASS",
+      "evidence": "All child processes spawn via no_window_command (0x08000000) with structured Vec<String> args and '--' before URL."
+    },
+    {
+      "category": "Security",
+      "item": "Windows Filename & Path Traversal Sanitization",
+      "status": "PASS",
+      "evidence": "Verified in platform::tests::test_sanitize_windows_filename_protects_reserved_and_traversal and test_validate_safe_output_dir."
+    },
+    {
+      "category": "Security",
+      "item": "Diagnostic Log & Report Redaction",
+      "status": "PASS",
+      "evidence": "Redacts tokens, cookies, auth headers, and C:\\Users\\<Username>\\ paths in utils::sanitize_text_for_log and diagnostic_service.rs."
+    },
+    {
+      "category": "Distribution",
+      "item": "Windows NSIS Installer Silent Install & Launch Verification",
+      "status": "PASS",
+      "evidence": "FlowDL_1.0.0_x64-setup.exe /S exited 0, installed binaries to %LOCALAPPDATA%\\FlowDL\\bin and licenses to %LOCALAPPDATA%\\FlowDL\\licenses, and launched FlowDL.exe cleanly."
+    },
+    {
+      "category": "Distribution",
+      "item": "GPLv3 / Unlicense / MIT Legal & License Compliance",
+      "status": "PASS",
+      "evidence": "Packaged LICENSE-FFmpeg-GPLv3.txt, UNLICENSE-yt-dlp.txt, LICENSE-Deno-MIT.txt, and THIRD_PARTY_NOTICES.txt in installer and repository."
+    },
+    {
+      "category": "Distribution",
+      "item": "Commercial Windows EV Authenticode Code Signing Certificate",
+      "status": "BLOCKED",
+      "evidence": "Requires external commercial Authenticode certificate (.pfx) in GitHub Secrets (WINDOWS_CERTIFICATE). Documented SmartScreen behavior and setup in docs/release-process.md."
+    },
+    {
+      "category": "Distribution",
+      "item": "Tauri Ed25519 Private Key in GitHub Actions Secrets",
+      "status": "BLOCKED",
+      "evidence": "Private signing keys must never be committed to Git. Maintainer must add TAURI_SIGNING_PRIVATE_KEY to GitHub repository secrets as documented in docs/release-process.md."
+    },
+    {
+      "category": "GitHub",
+      "item": "Complete Documentation, Issue/PR Templates, Dependabot & CI/Release Workflows",
+      "status": "PASS",
+      "evidence": "Created README.md, LICENSE, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, CHANGELOG.md, THIRD_PARTY_NOTICES.md, 7 docs/*.md guides, and 4 .github/workflows/*.yml pipelines."
+    }
+  ]
+}

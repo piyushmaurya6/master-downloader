@@ -1,0 +1,33 @@
+name: Feature Request
+description: Suggest an enhancement or new capability for FlowDL
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: Requested Feature
+      description: Concise summary of the feature you would like to see
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: User Problem
+      description: What problem or workflow friction does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Behavior
+      description: How should this feature look and work inside FlowDL?
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Relevant Examples or Context
+      description: Any screenshots, yt-dlp flags, or reference workflows
+    validations:
+      required: false

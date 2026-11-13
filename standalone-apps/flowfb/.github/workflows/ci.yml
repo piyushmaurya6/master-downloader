@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  verify-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Rust Stable Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+
+      - name: TypeScript Strict Check
+        run: npm run typecheck
+
+      - name: Run Frontend Unit Tests (Vitest)
+        run: npm run test
+
+      - name: Build Production Frontend Bundle
+        run: npm run build
+
+      - name: Run Rust Unit Tests (URL Normalizer, DASH Parser, Auth Vault, SQLite)
+        working-directory: src-tauri
+        run: cargo test

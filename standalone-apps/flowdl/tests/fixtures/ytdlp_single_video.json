@@ -1,0 +1,45 @@
+{
+  "id": "eRsGyueVLvQ",
+  "title": "Sintel — Open Movie by Blender Studio (4K Remaster)",
+  "webpage_url": "https://www.youtube.com/watch?v=eRsGyueVLvQ",
+  "thumbnail": "https://i.ytimg.com/vi/eRsGyueVLvQ/maxresdefault.jpg",
+  "uploader": "Blender Foundation",
+  "channel_url": "https://www.youtube.com/@BlenderFoundation",
+  "duration": 888.0,
+  "extractor": "youtube",
+  "upload_date": "20100930",
+  "description": "Open-source animated short film created by the Blender Institute.",
+  "formats": [
+    {
+      "format_id": "140",
+      "ext": "m4a",
+      "vcodec": "none",
+      "acodec": "mp4a.40.2",
+      "tbr": 129.5,
+      "filesize": 14375820
+    },
+    {
+      "format_id": "137",
+      "ext": "mp4",
+      "height": 1080,
+      "width": 1920,
+      "fps": 24,
+      "vcodec": "avc1.640028",
+      "acodec": "none",
+      "filesize": 158334976
+    },
+    {
+      "format_id": "313",
+      "ext": "webm",
+      "height": 2160,
+      "width": 3840,
+      "fps": 24,
+      "vcodec": "vp9",
+      "acodec": "none",
+      "filesize_approx": 645922816
+    }
+  ],
+  "subtitles": {
+    "en": [{ "ext": "vtt", "name": "English" }]
+  }
+}

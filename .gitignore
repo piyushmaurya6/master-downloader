@@ -1,0 +1,35 @@
+# Dependencies
+**/node_modules/
+
+# Frontend build outputs
+**/dist/
+**/dist-ssr/
+**/*.local
+
+# Rust / Tauri build outputs
+**/src-tauri/target/
+**/target/
+
+# Runtime & temporary artifacts
+**/*.part
+**/*.ytdl
+**/*.corrupt.*.db
+**/*.db-wal
+**/*.db-shm
+**/cookies_*.txt
+.env
+.env.*
+!.env.example
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+# Bundled sidecars & compiled release installers (provisioned via scripts/setup-sidecars.ps1 & published on GitHub Releases)
+**/src-tauri/resources/bin/*.exe
+**/src-tauri/resources/bin/*.dll
+releases/*.exe
+releases/*.msi

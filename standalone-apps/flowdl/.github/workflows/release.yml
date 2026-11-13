@@ -1,0 +1,146 @@
+name: FlowDL Automated Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag (e.g. v1.0.0)"
+        required: true
+        default: "v1.0.0"
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    name: Build, Sign & Publish Windows x64 Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate release tag matches package.json, Cargo.toml & tauri.conf.json
+        shell: pwsh
+        run: |
+          $rawTag = "${{ github.event.inputs.tag_name != '' && github.event.inputs.tag_name || github.ref_name }}"
+          $tagVer = $rawTag.TrimStart('v')
+          $pkgVer = (Get-Content package.json | ConvertFrom-Json).version
+          $tauriVer = (Get-Content src-tauri/tauri.conf.json | ConvertFrom-Json).version
+          $cargoContent = Get-Content src-tauri/Cargo.toml -Raw
+          if ($cargoContent -match 'version\s*=\s*"([^"]+)"') { $cargoVer = $Matches[1] } else { throw "Could not read Cargo.toml version" }
+
+          if ($tagVer -ne $pkgVer -or $tagVer -ne $tauriVer -or $tagVer -ne $cargoVer) {
+            throw "Version mismatch! Tag=$tagVer, package.json=$pkgVer, tauri.conf.json=$tauriVer, Cargo.toml=$cargoVer"
+          }
+          Write-Host "Validated release version: $tagVer"
+          "RELEASE_VERSION=$tagVer" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "RELEASE_TAG=v$tagVer" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Rust stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cargo cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Run frontend typecheck, lint & test suite
+        run: |
+          npm run typecheck
+          npm run lint
+          npm run test
+
+      - name: Prepare & SHA-256 verify bundled engines (yt-dlp, FFmpeg, ffprobe, Deno)
+        shell: pwsh
+        run: ./scripts/prepare-bundled-binaries.ps1
+
+      - name: Run Rust backend test suite
+        working-directory: src-tauri
+        run: cargo test
+
+      - name: Build production Windows NSIS installer
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npx tauri build --bundles nsis
+
+      - name: Generate SHA-256 checksums, Updater Manifest (latest.json) & SPDX SBOM
+        shell: pwsh
+        run: |
+          $ver = $env:RELEASE_VERSION
+          $nsisDir = "src-tauri/target/release/bundle/nsis"
+          $setupExe = Get-ChildItem "$nsisDir/*-setup.exe" | Select-Object -First 1
+          if (-not $setupExe) { throw "NSIS installer not found in $nsisDir" }
+
+          $outDir = "release-artifacts"
+          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+
+          $canonicalSetup = "$outDir/FlowDL_${ver}_x64-setup.exe"
+          Copy-Item $setupExe.FullName -Destination $canonicalSetup -Force
+
+          $hash = (Get-FileHash -Path $canonicalSetup -Algorithm SHA256).Hash.ToLower()
+          "$hash  FlowDL_${ver}_x64-setup.exe" | Set-Content -Path "$canonicalSetup.sha256" -Encoding UTF8
+
+          $sigFile = "$($setupExe.FullName).sig"
+          $sigContent = if (Test-Path $sigFile) {
+            Copy-Item $sigFile -Destination "$canonicalSetup.sig" -Force
+            (Get-Content $sigFile -Raw).Trim()
+          } else {
+            "SHA256:$hash"
+          }
+
+          $repo = "${{ github.repository }}"
+          $manifest = @{
+            version = $ver
+            notes = "FlowDL v$ver official self-contained Windows x64 release."
+            pub_date = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+            platforms = @{
+              "windows-x86_64" = @{
+                signature = $sigContent
+                url = "https://github.com/$repo/releases/download/v$ver/FlowDL_${ver}_x64-setup.exe"
+                sha256 = $hash
+              }
+            }
+          }
+          $manifest | ConvertTo-Json -Depth 5 | Set-Content -Path "$outDir/latest.json" -Encoding UTF8
+
+          $sbom = @{
+            spdxVersion = "SPDX-2.3"
+            dataLicense = "CC0-1.0"
+            SPDXID = "SPDXRef-DOCUMENT"
+            name = "FlowDL-$ver"
+            documentNamespace = "https://github.com/$repo/releases/tag/v$ver"
+            creationInfo = @{
+              created = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+              creators = @("Tool: FlowDL-Release-Pipeline")
+            }
+            packages = @(
+              @{ name = "FlowDL"; versionInfo = $ver; licenseDeclared = "GPL-3.0-or-later AND MIT" },
+              @{ name = "yt-dlp"; versionInfo = "bundled-latest"; licenseDeclared = "Unlicense" },
+              @{ name = "FFmpeg"; versionInfo = "win64-gpl-shared"; licenseDeclared = "GPL-3.0-or-later" },
+              @{ name = "Deno"; versionInfo = "2.x"; licenseDeclared = "MIT" }
+            )
+          }
+          $sbom | ConvertTo-Json -Depth 6 | Set-Content -Path "$outDir/FlowDL_${ver}_sbom.spdx.json" -Encoding UTF8
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: "FlowDL v${{ env.RELEASE_VERSION }}"
+          generate_release_notes: true
+          files: |
+            release-artifacts/*

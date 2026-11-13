@@ -1,0 +1,24 @@
+name: Bug Report
+description: Report a bug, extractor failure, or UI issue in InstaFlow
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please paste the **Sanitized Diagnostic Bundle** from **Settings → Diagnostic Console → Copy Diagnostic Bundle for GitHub Issue**.
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the issue and the type of Instagram media (Reel, Carousel, Post, Story, Highlight).
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostic_bundle
+    attributes:
+      label: Sanitized Diagnostic Bundle
+      description: Paste the JSON output from "Copy Diagnostic Bundle for GitHub Issue".
+      render: json
+    validations:
+      required: false

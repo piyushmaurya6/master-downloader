@@ -1,0 +1,6 @@
+FLOWDL_PROGRESS|  12.5%|15728640|125829120|NA|5242880|21
+FLOWDL_PROGRESS|  68.4%|86032384|NA|125829120|6291456|6
+[Merger] Merging formats into "C:\Users\Downloads\Sintel [eRsGyueVLvQ].mp4"
+[ExtractAudio] Destination: C:\Users\Downloads\Sintel [eRsGyueVLvQ].mp3
+[EmbedThumbnail] Adding thumbnail to "C:\Users\Downloads\Sintel [eRsGyueVLvQ].mp3"
+FLOWDL_FILEPATH|C:\Users\Downloads\Sintel [eRsGyueVLvQ].mp4

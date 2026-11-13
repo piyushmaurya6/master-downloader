@@ -1,0 +1,67 @@
+name: Release Windows Installer
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install Frontend Dependencies
+        run: npm ci
+
+      - name: Fetch Standalone Sidecar Binaries (yt-dlp, gallery-dl, FFmpeg)
+        shell: pwsh
+        run: |
+          $binDir = "src-tauri/resources/bin"
+          New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+          if (!(Test-Path "$binDir/yt-dlp.exe")) {
+            Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "$binDir/yt-dlp.exe"
+          }
+          if (!(Test-Path "$binDir/gallery-dl.exe")) {
+            Invoke-WebRequest -Uri "https://github.com/mikf/gallery-dl/releases/latest/download/gallery-dl.exe" -OutFile "$binDir/gallery-dl.exe"
+          }
+
+      - name: Run Tests Before Packaging
+        run: |
+          npm run typecheck
+          npm run test
+          cd src-tauri
+          cargo test
+
+      - name: Build Tauri NSIS Windows Installer
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: v__VERSION__
+          releaseName: "FlowFB v__VERSION__"
+          releaseBody: "Automated Windows x64 NSIS Setup & Portable Executable release for FlowFB."
+          releaseDraft: true
+          prerelease: false
+          args: --bundles nsis

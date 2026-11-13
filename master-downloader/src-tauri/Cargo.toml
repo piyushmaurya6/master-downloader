@@ -1,0 +1,48 @@
+[package]
+name = "master-downloader"
+version = "1.0.0"
+description = "Master Downloader — Unified auto-detecting & auto-downloading Windows desktop suite for YouTube, Instagram, and Facebook in up to 4K/60fps"
+authors = ["Master Downloader Contributors"]
+license = "MIT"
+repository = "https://github.com/master-downloader/master-downloader"
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "master_downloader_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.0.3", features = [] }
+
+[dependencies]
+tauri = { version = "2.1.1", features = ["custom-protocol"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.42", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "native-tls", "gzip"] }
+futures-util = "0.3"
+sha2 = "0.10"
+hex = "0.4"
+base64 = "0.22"
+aes-gcm = "0.10"
+rand = "0.8"
+keyring = { version = "3.6", features = ["windows-native"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+tracing-appender = "0.2"
+zip = { version = "2.2", default-features = false, features = ["deflate"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+uuid = { version = "1.11", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+dirs = "5.0"
+regex = "1.11"
+thiserror = "2.0"
+url = "2.5"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

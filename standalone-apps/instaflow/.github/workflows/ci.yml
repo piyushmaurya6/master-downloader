@@ -1,0 +1,55 @@
+name: CI — Lint, Test & Build Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Rust Stable Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Rust Cargo Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install Frontend Dependencies
+        run: pnpm install
+
+      - name: Run Frontend Lint & Typecheck
+        run: |
+          pnpm lint
+          pnpm typecheck
+
+      - name: Run Frontend Unit Tests (Vitest)
+        run: pnpm test
+
+      - name: Build Frontend Production Bundle
+        run: pnpm build
+
+      - name: Check Rust Formatting, Clippy & Unit Tests
+        working-directory: ./src-tauri
+        run: |
+          cargo fmt --all -- --check
+          cargo clippy --all-targets -- -D warnings
+          cargo test

@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" width="1100" height="720">
+  <defs>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <style>
+      .font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .font-mono { font-family: 'JetBrains Mono', 'Cascadia Code', Consolas, monospace; }
+    </style>
+  </defs>
+
+  <!-- Window Frame -->
+  <rect width="1100" height="720" rx="14" fill="#09090b" stroke="#27272a" stroke-width="1.5"/>
+
+  <!-- Custom Title Bar -->
+  <rect x="1" y="1" width="1098" height="38" rx="13" fill="#09090b"/>
+  <line x1="0" y1="39" x2="1100" y2="39" stroke="#18181b" stroke-width="1"/>
+  <rect x="16" y="11" width="18" height="18" rx="5" fill="url(#accent)"/>
+  <text x="42" y="24" fill="#e4e4e7" font-size="12" font-weight="600" class="font-sans">FlowDL</text>
+  <!-- Window Controls -->
+  <line x1="1012" y1="20" x2="1022" y2="20" stroke="#71717a" stroke-width="1.5"/>
+  <rect x="1042" y="15" width="10" height="10" rx="1.5" fill="none" stroke="#71717a" stroke-width="1.5"/>
+  <line x1="1072" y1="15" x2="1082" y2="25" stroke="#71717a" stroke-width="1.5"/>
+  <line x1="1082" y1="15" x2="1072" y2="25" stroke="#71717a" stroke-width="1.5"/>
+
+  <!-- Left Navigation Sidebar -->
+  <rect x="1" y="40" width="218" height="679" fill="#0c0c0f"/>
+  <line x1="219" y1="40" x2="219" y2="719" stroke="#1f1f23" stroke-width="1"/>
+
+  <!-- Nav Items -->
+  <rect x="14" y="56" width="190" height="38" rx="10" fill="#6366f1" fill-opacity="0.14" stroke="#6366f1" stroke-opacity="0.35"/>
+  <text x="44" y="80" fill="#818cf8" font-size="13" font-weight="600" class="font-sans">Home</text>
+
+  <text x="44" y="124" fill="#a1a1aa" font-size="13" font-weight="500" class="font-sans">Downloads</text>
+  <rect x="172" y="109" width="22" height="18" rx="9" fill="#27272a"/>
+  <text x="180" y="122" fill="#d4d4d8" font-size="11" font-weight="600" class="font-mono">1</text>
+
+  <text x="44" y="168" fill="#a1a1aa" font-size="13" font-weight="500" class="font-sans">History</text>
+  <text x="44" y="212" fill="#a1a1aa" font-size="13" font-weight="500" class="font-sans">Settings</text>
+
+  <!-- Sidebar Footer: Engine Health & Version -->
+  <rect x="14" y="618" width="190" height="84" rx="12" fill="#121216" stroke="#232329"/>
+  <circle cx="30" cy="642" r="4.5" fill="#10b981"/>
+  <text x="42" y="646" fill="#e4e4e7" font-size="11.5" font-weight="600" class="font-sans">All engines ready</text>
+  <text x="26" y="666" fill="#71717a" font-size="10.5" class="font-mono">yt-dlp 2026.10.26 · FFmpeg</text>
+  <text x="26" y="688" fill="#52525b" font-size="10.5" class="font-mono">FlowDL v1.0.0</text>
+
+  <!-- Main Content Area -->
+  <text x="260" y="92" fill="#fafafa" font-size="26" font-weight="700" class="font-sans">Download something great.</text>
+  <text x="260" y="116" fill="#a1a1aa" font-size="13.5" class="font-sans">Paste a link, choose your format, and we'll handle the rest.</text>
+
+  <!-- URL Input Card -->
+  <rect x="260" y="138" width="796" height="68" rx="16" fill="#121216" stroke="#27272a" stroke-width="1.2"/>
+  <rect x="276" y="152" width="540" height="40" rx="10" fill="#09090b" stroke="#27272a"/>
+  <text x="292" y="177" fill="#e4e4e7" font-size="12.5" class="font-mono">https://www.youtube.com/watch?v=eRsGyueVLvQ</text>
+
+  <rect x="826" y="152" width="96" height="40" rx="10" fill="#18181b" stroke="#27272a"/>
+  <text x="857" y="177" fill="#d4d4d8" font-size="12.5" font-weight="500" class="font-sans">Paste</text>
+
+  <rect x="932" y="152" width="108" height="40" rx="10" fill="url(#accent)"/>
+  <text x="962" y="177" fill="#ffffff" font-size="12.5" font-weight="600" class="font-sans">Analyze</text>
+
+  <!-- Video Preview Card -->
+  <rect x="260" y="226" width="796" height="456" rx="18" fill="#121216" stroke="#27272a" stroke-width="1.2"/>
+
+  <!-- Horizontal Metadata Header -->
+  <rect x="282" y="248" width="230" height="128" rx="12" fill="#18181b" stroke="#27272a"/>
+  <polygon points="388,298 388,326 412,312" fill="#818cf8"/>
+  <rect x="454" y="348" width="48" height="20" rx="5" fill="#09090b" fill-opacity="0.88"/>
+  <text x="463" y="362" fill="#fafafa" font-size="11" class="font-mono">14:48</text>
+
+  <rect x="532" y="250" width="68" height="22" rx="6" fill="#6366f1" fill-opacity="0.15"/>
+  <text x="544" y="265" fill="#818cf8" font-size="11" font-weight="600" class="font-mono">Youtube</text>
+  <text x="612" y="265" fill="#71717a" font-size="11.5" class="font-sans">Blender Foundation · Up to 2160p · 60fps</text>
+
+  <text x="532" y="296" fill="#f4f4f5" font-size="17" font-weight="700" class="font-sans">Sintel — Open Movie by Blender Studio (4K Remaster)</text>
+  <text x="532" y="322" fill="#a1a1aa" font-size="12.5" class="font-sans">Open-source animated short film produced by the Blender Institute.</text>
+  <text x="532" y="352" fill="#71717a" font-size="11.5" class="font-mono">Available streams: 2160p, 1440p, 1080p, 720p, 480p, 360p · H.264 / VP9 / AV1</text>
+
+  <line x1="282" y1="396" x2="1034" y2="396" stroke="#1f1f23"/>
+
+  <!-- Segmented Video | Audio Selector -->
+  <rect x="282" y="414" width="220" height="38" rx="10" fill="#09090b" stroke="#27272a"/>
+  <rect x="286" y="418" width="106" height="30" rx="8" fill="#6366f1"/>
+  <text x="322" y="438" fill="#ffffff" font-size="12.5" font-weight="600" class="font-sans">Video</text>
+  <text x="430" y="438" fill="#a1a1aa" font-size="12.5" font-weight="500" class="font-sans">Audio</text>
+
+  <!-- Quality Presets -->
+  <text x="282" y="478" fill="#a1a1aa" font-size="11.5" font-weight="600" class="font-sans">RESOLUTION &amp; QUALITY</text>
+
+  <rect x="282" y="490" width="102" height="36" rx="9" fill="#18181b" stroke="#27272a"/>
+  <text x="298" y="513" fill="#d4d4d8" font-size="12" class="font-sans">Best available</text>
+
+  <rect x="392" y="490" width="96" height="36" rx="9" fill="#18181b" stroke="#27272a"/>
+  <text x="410" y="513" fill="#d4d4d8" font-size="12" class="font-sans">4K (2160p)</text>
+
+  <rect x="496" y="490" width="76" height="36" rx="9" fill="#18181b" stroke="#27272a"/>
+  <text x="516" y="513" fill="#d4d4d8" font-size="12" class="font-sans">1440p</text>
+
+  <rect x="580" y="490" width="128" height="36" rx="9" fill="#6366f1" fill-opacity="0.18" stroke="#6366f1"/>
+  <text x="596" y="513" fill="#818cf8" font-size="12" font-weight="600" class="font-sans">1080p (~151 MB)</text>
+
+  <rect x="716" y="490" width="72" height="36" rx="9" fill="#18181b" stroke="#27272a"/>
+  <text x="738" y="513" fill="#d4d4d8" font-size="12" class="font-sans">720p</text>
+
+  <rect x="796" y="490" width="72" height="36" rx="9" fill="#18181b" stroke="#27272a"/>
+  <text x="818" y="513" fill="#d4d4d8" font-size="12" class="font-sans">480p</text>
+
+  <!-- Container & Output Folder Row -->
+  <text x="282" y="556" fill="#a1a1aa" font-size="11.5" font-weight="600" class="font-sans">CONTAINER FORMAT</text>
+  <rect x="282" y="568" width="64" height="34" rx="8" fill="#6366f1" fill-opacity="0.18" stroke="#6366f1"/>
+  <text x="301" y="590" fill="#818cf8" font-size="12" font-weight="600" class="font-mono">MP4</text>
+
+  <rect x="354" y="568" width="64" height="34" rx="8" fill="#18181b" stroke="#27272a"/>
+  <text x="373" y="590" fill="#d4d4d8" font-size="12" class="font-mono">MKV</text>
+
+  <rect x="426" y="568" width="68" height="34" rx="8" fill="#18181b" stroke="#27272a"/>
+  <text x="441" y="590" fill="#d4d4d8" font-size="12" class="font-mono">WebM</text>
+
+  <rect x="502" y="568" width="64" height="34" rx="8" fill="#18181b" stroke="#27272a"/>
+  <text x="520" y="590" fill="#d4d4d8" font-size="12" class="font-sans">Auto</text>
+
+  <!-- Primary Download Action -->
+  <rect x="818" y="618" width="216" height="44" rx="12" fill="url(#accent)"/>
+  <text x="876" y="645" fill="#ffffff" font-size="13.5" font-weight="600" class="font-sans">Download Video</text>
+</svg>

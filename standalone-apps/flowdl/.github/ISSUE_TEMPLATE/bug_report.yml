@@ -1,0 +1,66 @@
+name: Bug Report
+description: Report a bug or unexpected behavior in FlowDL
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Tip: You can generate a privacy-redacted diagnostic report in **FlowDL → Settings → Download Engine → Copy Sanitized Diagnostic Report**.
+  - type: input
+    id: flowdl_version
+    attributes:
+      label: FlowDL Version
+      description: What version of FlowDL are you running?
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: windows_version
+    attributes:
+      label: Windows Version
+      description: Windows 10 or Windows 11 version/build
+      placeholder: "Windows 11 24H2 (x64)"
+    validations:
+      required: true
+  - type: input
+    id: engine_version
+    attributes:
+      label: Download Engine Version (yt-dlp / FFmpeg)
+      description: Shown in Settings -> Download Engine
+      placeholder: "yt-dlp 2026.10.26 / FFmpeg N-128280"
+    validations:
+      required: false
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Clear steps to reproduce the issue
+      placeholder: |
+        1. Paste URL '...'
+        2. Select Video -> 1080p -> MP4
+        3. Click Download
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? Include any error code shown.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized Diagnostic Report / Logs
+      description: Paste the output from "Copy Sanitized Diagnostic Report" in Settings. Please review to ensure no private URLs or personal details are included.
+      render: text
+    validations:
+      required: false

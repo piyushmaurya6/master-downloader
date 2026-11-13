@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Frontend build output
+dist/
+dist-ssr/
+*.local
+
+# Tauri / Rust build artifacts
+src-tauri/target/
+src-tauri/gen/schemas/
+src-tauri/WixTools/
+
+# Bundled large binary executables (fetched via scripts/prepare-bundled-binaries.ps1)
+src-tauri/resources/bin/*.exe
+src-tauri/resources/bin/*.dll
+
+# Local release binaries (upload FlowDL_1.0.0_x64-setup.exe to GitHub Releases instead)
+release/
+
+# Logs & OS files
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.env
+.env.*

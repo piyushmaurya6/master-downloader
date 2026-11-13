@@ -1,0 +1,4 @@
+# Binary assets tracked via Git LFS when using `git lfs install`
+*.exe filter=lfs diff=lfs merge=lfs -text
+*.dll filter=lfs diff=lfs merge=lfs -text
+*.msi filter=lfs diff=lfs merge=lfs -text

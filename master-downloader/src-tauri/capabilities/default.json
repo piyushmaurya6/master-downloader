@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Least-privilege capabilities for the Master Downloader main, Instagram auth, and Facebook auth windows",
+  "windows": ["main", "ig-auth", "fb-auth", "yt-auth"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-is-maximized",
+    "core:window:allow-start-dragging",
+    "core:event:default",
+    "core:webview:default"
+  ]
+}
