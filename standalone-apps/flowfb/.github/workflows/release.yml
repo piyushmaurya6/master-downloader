@@ -36,19 +36,44 @@ jobs:
       - name: Fetch Standalone Sidecar Binaries (yt-dlp, gallery-dl, FFmpeg)
         shell: pwsh
         run: |
+          $ErrorActionPreference = "Stop"
+          $ProgressPreference = "SilentlyContinue"
           $binDir = "src-tauri/resources/bin"
           New-Item -ItemType Directory -Force -Path $binDir | Out-Null
           if (!(Test-Path "$binDir/yt-dlp.exe")) {
-            Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "$binDir/yt-dlp.exe"
+            curl.exe -fL --retry 3 -o "$binDir/yt-dlp.exe" "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe"
           }
           if (!(Test-Path "$binDir/gallery-dl.exe")) {
-            Invoke-WebRequest -Uri "https://github.com/mikf/gallery-dl/releases/latest/download/gallery-dl.exe" -OutFile "$binDir/gallery-dl.exe"
+            $gdlUrl = $null
+            try {
+              $cb = Invoke-RestMethod -Uri "https://codeberg.org/api/v1/repos/mikf/gallery-dl/releases/latest" -Headers @{ "User-Agent" = "FlowFB-CI/1.0" } -TimeoutSec 20
+              $gdlUrl = ($cb.assets | Where-Object { $_.name -eq "gallery-dl.exe" } | Select-Object -First 1).browser_download_url
+            } catch {}
+            if (-not $gdlUrl) {
+              $gdlUrl = "https://github.com/gdl-org/builds/releases/latest/download/gallery-dl_windows.exe"
+            }
+            curl.exe -fL --retry 3 -o "$binDir/gallery-dl.exe" $gdlUrl
+          }
+          if (!(Test-Path "$binDir/ffmpeg.exe")) {
+            $ffZip = Join-Path $env:TEMP "ffmpeg-flowfb.zip"
+            $ffExtract = Join-Path $env:TEMP "ffmpeg-flowfb-extract"
+            curl.exe -fL --retry 3 -o $ffZip "https://github.com/FFmpeg-Builds/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl-shared.zip"
+            Remove-Item $ffExtract -Recurse -Force -ErrorAction SilentlyContinue
+            Expand-Archive -Path $ffZip -DestinationPath $ffExtract -Force
+            Get-ChildItem -Path $ffExtract -Recurse -File | Where-Object {
+              $_.Name -in @("ffmpeg.exe", "ffprobe.exe") -or $_.Extension -eq ".dll"
+            } | ForEach-Object {
+              Copy-Item $_.FullName -Destination (Join-Path $binDir $_.Name) -Force
+            }
+            Remove-Item $ffZip -Force -ErrorAction SilentlyContinue
+            Remove-Item $ffExtract -Recurse -Force -ErrorAction SilentlyContinue
           }
 
       - name: Run Tests Before Packaging
         run: |
           npm run typecheck
           npm run test
+          npm run build
           cd src-tauri
           cargo test
 

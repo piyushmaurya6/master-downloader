@@ -17,10 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Setup Rust stable
         uses: dtolnay/rust-toolchain@stable
@@ -34,12 +34,13 @@ jobs:
         shell: pwsh
         run: .\scripts\setup-sidecars.ps1
 
-      - name: Install frontend dependencies & run verification tests
+      - name: Install frontend dependencies, typecheck, test & build dist
         working-directory: master-downloader
         run: |
           npm install
           npm run typecheck
           npm run test
+          npm run build
 
       - name: Run Rust unit tests
         working-directory: master-downloader/src-tauri
@@ -53,9 +54,11 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path dist-release | Out-Null
-          Copy-Item "master-downloader\src-tauri\target\release\bundle\nsis\*_x64-setup.exe" "dist-release\Master_Downloader_x64-setup.exe" -Force
+          $setupExe = Get-ChildItem "master-downloader\src-tauri\target\release\bundle\nsis\*-setup.exe" -File | Select-Object -First 1
+          if (-not $setupExe) { throw "NSIS installer (*-setup.exe) was not found in target/release/bundle/nsis" }
+          Copy-Item $setupExe.FullName "dist-release\Master_Downloader_x64-setup.exe" -Force
           Copy-Item "master-downloader\src-tauri\target\release\master-downloader.exe" "dist-release\MasterDownloader.exe" -Force
-          Get-ChildItem dist-release -File | ForEach-Object {
+          Get-ChildItem dist-release -File | Where-Object { $_.Name -ne "SHA256SUMS.txt" } | ForEach-Object {
             $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
             "$h  $($_.Name)" | Add-Content -Path "dist-release\SHA256SUMS.txt"
           }

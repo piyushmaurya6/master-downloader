@@ -359,11 +359,45 @@ impl BinaryManager {
         }
 
         if force_update || !self.is_valid_binary(&self.gallery_dl_path()) {
-            let gdl_url =
-                "https://github.com/mikf/gallery-dl/releases/latest/download/gallery-dl.exe";
-            let _ = self
-                .download_with_backup(&client, "gallery-dl.exe", gdl_url, app)
-                .await;
+            let mut gdl_urls: Vec<String> = Vec::new();
+            if let Ok(resp) = client
+                .get("https://codeberg.org/api/v1/repos/mikf/gallery-dl/releases/latest")
+                .send()
+                .await
+            {
+                if let Ok(json) = resp.json::<serde_json::Value>().await {
+                    if let Some(assets) = json.get("assets").and_then(|a| a.as_array()) {
+                        for asset in assets {
+                            let is_exe = asset
+                                .get("name")
+                                .and_then(|n| n.as_str())
+                                .map(|n| n.eq_ignore_ascii_case("gallery-dl.exe"))
+                                .unwrap_or(false);
+                            if is_exe {
+                                if let Some(u) =
+                                    asset.get("browser_download_url").and_then(|u| u.as_str())
+                                {
+                                    gdl_urls.push(u.to_string());
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            gdl_urls.push(
+                "https://github.com/gdl-org/builds/releases/latest/download/gallery-dl_windows.exe"
+                    .to_string(),
+            );
+            for url in &gdl_urls {
+                if self
+                    .download_with_backup(&client, "gallery-dl.exe", url, app)
+                    .await
+                    .is_ok()
+                {
+                    break;
+                }
+            }
         }
 
         Ok(self.check_status().await)
