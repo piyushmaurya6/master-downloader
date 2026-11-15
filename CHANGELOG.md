@@ -2,6 +2,13 @@
 
 All notable changes to **Master Downloader** are documented in this file.
 
+## [1.1.0] — 2026-11-15
+
+### Added & Improved
+- **Codeberg + Multi-Mirror Engine Provisioning (`gallery-dl` & `FFmpeg 8`)**: Updated both CI sidecar provisioning (`scripts/setup-sidecars.ps1`) and the in-app Rust `BinaryManager` (`binary_manager.rs`) to dynamically resolve `gallery-dl.exe` from Codeberg's official release API (`gh#9374`) with automatic `gdl-org/builds` fallback, plus multi-mirror `FFmpeg-Builds` downloads.
+- **Automated Windows x64 CI/CD Release Pipeline**: Verified end-to-end automated GitHub Actions NSIS installer compilation, frontend + Rust unit test gates, and MSVC Common Controls v6 test-harness manifest embedding (`build.rs`).
+- **Complete Visual Product Showcase & Documentation**: Added 2x Retina UI screenshots of both **Master Downloader** (Workspace, Instagram Carousel Picker, Media Library) and the **FlowDL Booth** (YouTube 4K/8K Studio & Parallel Queue), plus expanded real-world use-case and FAQ documentation.
+
 ## [1.0.0] — 2026-11-13
 
 ### Added

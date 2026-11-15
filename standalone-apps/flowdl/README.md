@@ -4,11 +4,11 @@
   <p><strong>A modern, self-contained Windows desktop video and audio downloader powered by yt-dlp and FFmpeg.</strong></p>
 
   <p>
-    <a href="https://github.com/piyushmaurya6/flowdl/releases/latest">
-      <img src="https://img.shields.io/badge/Release-v1.0.0-6366f1?style=flat-square" alt="Release Version" />
+    <a href="https://github.com/piyushmaurya6/master-downloader/releases/latest">
+      <img src="https://img.shields.io/github/v/release/piyushmaurya6/master-downloader?style=flat-square&color=6366f1&label=Release" alt="Release Version" />
     </a>
-    <a href="https://github.com/piyushmaurya6/flowdl/actions/workflows/ci.yml">
-      <img src="https://img.shields.io/github/actions/workflow/status/piyushmaurya6/flowdl/ci.yml?branch=main&style=flat-square&label=CI" alt="Build Status" />
+    <a href="https://github.com/piyushmaurya6/master-downloader/actions/workflows/build-and-release.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/piyushmaurya6/master-downloader/build-and-release.yml?branch=main&style=flat-square&label=CI" alt="Build Status" />
     </a>
     <a href="./LICENSE">
       <img src="https://img.shields.io/badge/License-GPLv3%20%2F%20MIT-10b981?style=flat-square" alt="License" />
@@ -17,18 +17,20 @@
   </p>
 
   <p>
-    <a href="https://github.com/piyushmaurya6/flowdl/releases/download/v1.0.0/FlowDL_1.0.0_x64-setup.exe">
-      <img src="https://img.shields.io/badge/Download_Installer-FlowDL_1.0.0_x64--setup.exe-6366f1?style=for-the-badge&logo=windows&logoColor=white" alt="Download FlowDL v1.0.0 for Windows (x64)" />
+    <a href="https://github.com/piyushmaurya6/master-downloader/releases/latest">
+      <img src="https://img.shields.io/badge/Download_FlowDL_Booth-FlowDL_1.0.0_x64--setup.exe-6366f1?style=for-the-badge&logo=windows&logoColor=white" alt="Download FlowDL v1.0.0 for Windows (x64)" />
     </a>
   </p>
 </div>
 
 ---
 
-## Screenshot
+## Live Application Screenshots
 
 <div align="center">
-  <img src="./assets/screenshots/flowdl-dashboard.svg" alt="FlowDL Desktop Interface" width="100%" />
+  <img src="../../docs/screenshots/flowdl-studio-home.png" alt="FlowDL YouTube 4K 60fps HDR Video and FLAC MP3 Audio Downloader Studio on Windows 11" width="100%" />
+  <br /><br />
+  <img src="../../docs/screenshots/flowdl-downloads-queue.png" alt="FlowDL Parallel YouTube Download Queue Merging 4K AV1 Streams and Converting 320 kbps MP3 Audio" width="100%" />
 </div>
 
 ---
